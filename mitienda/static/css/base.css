@@ -1,0 +1,100 @@
+/* =========================================
+   Variables de Marca (Theming)
+========================================= */
+:root {
+    --brand-color: #d63384;
+    --brand-color-hover: #b02a6c;
+    --font-serif: 'Georgia', serif;
+}
+
+/* =========================================
+   Tipografía y Utilidades Globales
+========================================= */
+.font-serif {
+    font-family: var(--font-serif);
+}
+
+.text-brand {
+    color: var(--brand-color) !important;
+}
+
+.brand-logo { 
+    font-family: var(--font-serif); 
+    font-size: 2rem; 
+    font-style: italic; 
+    color: var(--brand-color); 
+}
+
+/* =========================================
+   Botones y Efectos Interactivos (Presencia)
+========================================= */
+.btn-brand {
+    background-color: var(--brand-color);
+    border-color: var(--brand-color);
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.btn-brand:hover {
+    background-color: var(--brand-color-hover);
+    border-color: var(--brand-color-hover);
+    color: white;
+}
+
+/* Efectos de elevación suave para tarjetas */
+.card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+}
+
+/* Imágenes del catálogo */
+.img-cover-250 {
+    height: 250px; 
+    object-fit: cover;
+}
+
+.icon-placeholder-250 {
+    height: 250px;
+}
+
+/* =========================================
+   Estilos de Landing Page (Video CRT)
+========================================= */
+.video-hero-wrapper {
+    position: relative; width: 100%; height: 85vh; overflow: hidden;
+    display: flex; align-items: center; justify-content: center; background-color: #000; 
+}
+.vintage-bg-video {
+    position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%;
+    width: auto; height: auto; transform: translateX(-50%) translateY(-50%); z-index: 0;
+    filter: grayscale(40%) sepia(30%) contrast(120%) brightness(80%);
+}
+.crt-overlay {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; 
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+    background-size: 100% 4px, 6px 100%; box-shadow: inset 0 0 100px rgba(0,0,0, 0.9);
+    animation: flicker 0.15s infinite;
+}
+.hero-content { position: relative; z-index: 2; text-align: center; color: white; }
+.text-shadow-vintage { text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+@keyframes flicker { 0% { opacity: 0.95; } 50% { opacity: 1; } 100% { opacity: 0.98; } }
+
+/* =========================================
+   Formularios y Accesibilidad (Usabilidad)
+========================================= */
+.custom-form p, .auth-form p { margin-bottom: 1rem; }
+.custom-form label, .auth-form label { display: block; margin-bottom: 0.3rem; font-weight: 500; font-size: 0.95rem; }
+.custom-form input, .custom-form select, .custom-form textarea, .auth-form input { 
+    width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #dee2e6; border-radius: 0.375rem; 
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+.custom-form input:focus, .custom-form select:focus, .custom-form textarea:focus, .auth-form input:focus {
+    border-color: var(--brand-color); outline: 0; box-shadow: 0 0 0 0.25rem rgba(214, 51, 132, 0.25);
+}
+ul.errorlist { color: #dc3545; font-size: 0.85rem; padding-left: 0; list-style: none; margin-top: 0.25rem; }
+.auth-form .helptext { display: block; font-size: 0.75rem; color: #6c757d; margin-top: 0.25rem; }
