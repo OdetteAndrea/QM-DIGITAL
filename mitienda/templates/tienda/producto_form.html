@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if object %}Editar{% else %}Crear{% endif %} Producto | Odette{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h3 class="card-title text-center mb-4 font-serif text-brand">
+                        {% if object %}Editar Producto: {{ object.nombre }}{% else %}Crear Nuevo Producto{% endif %}
+                    </h3>
+                    
+                    <form method="post" enctype="multipart/form-data" class="custom-form">
+                        {% csrf_token %}
+                        
+                        {% if form.errors %}
+                            <div class="alert alert-danger p-2 small">Corrige los errores indicados debajo.</div>
+                        {% endif %}
+                        
+                        {{ form.as_p }}
+                        
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'producto_list' %}" class="btn btn-outline-secondary">Cancelar</a>
+                            <button type="submit" class="btn btn-brand px-4">
+                                <i class="bi bi-save me-1"></i> Guardar Producto
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión | Odette{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h3 class="card-title text-center mb-4 font-serif text-brand">Bienvenido de vuelta</h3>
+                    
+                    {% if form.errors %}
+                        <div class="alert alert-danger" role="alert">
+                            Usuario o contraseña incorrectos. Inténtalo nuevamente.
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="{{ form.username.id_for_label }}" class="form-label">Nombre de usuario</label>
+                            <input type="text" name="{{ form.username.name }}" class="form-control" id="{{ form.username.id_for_label }}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="{{ form.password.id_for_label }}" class="form-label">Contraseña</label>
+                            <input type="password" name="{{ form.password.name }}" class="form-control" id="{{ form.password.id_for_label }}" required>
+                        </div>
+                        <button type="submit" class="btn btn-brand w-100 py-2">Entrar</button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="small text-muted">¿No tienes cuenta? <a href="{% url 'register' %}" class="text-decoration-none text-brand">Regístrate aquí</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

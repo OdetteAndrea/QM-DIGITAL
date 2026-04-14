@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %} {% block title %}Inicio | Odette{% endblock %}
+
+{% block content %}
+<div class="video-hero-wrapper">
+    
+    <video autoplay loop muted playsinline class="vintage-bg-video">
+        <source src="{% static 'videos/flores.mp4' %}" type="video/mp4">
+        Tu navegador no soporta videos HTML5.
+    </video>
+    
+    <div class="crt-overlay"></div>
+    
+    <div class="hero-content container">
+        <h1 class="display-3 fw-bold text-shadow-vintage font-serif" style="font-style: italic;">Odette</h1>
+        <p class="lead text-shadow-vintage mb-4">Arreglos que hablan por ti.</p>
+        <a href="{% url 'catalogo' %}" class="btn btn-lg btn-brand shadow">
+            Descubrir Colección
+        </a>
+    </div>
+</div>
+
+<div class="container my-5">
+    </div>
+{% endblock %}

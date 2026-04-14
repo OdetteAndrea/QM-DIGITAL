@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Pago Seguro | Odette{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-dark text-white text-center py-3 rounded-top-4">
+                    <h4 class="mb-0"><i class="bi bi-shield-lock-fill text-success me-2"></i>Pasarela de Pago Segura</h4>
+                    <small class="text-white-50">Simulador Bancario Ficticio</small>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded">
+                        <span class="text-muted">Total a pagar:</span>
+                        <span class="fs-4 fw-bold text-brand">${{ total_pagar|floatformat:0 }}</span>
+                    </div>
+                    
+                    <!-- El formulario reenvía de forma oculta la dirección final hacia procesar_compra -->
+                    <form action="{% url 'procesar_compra' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="direccion_envio" value="{{ direccion_id }}">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Titular de la Tarjeta</label>
+                            <input type="text" class="form-control" name="titular_tarjeta" placeholder="Ej. Juan Pérez" required value="{{ request.user.get_full_name|default:request.user.username }}">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Número de Tarjeta</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="bi bi-credit-card"></i></span>
+                                <input type="text" class="form-control" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">Vencimiento</label>
+                                <input type="text" class="form-control" placeholder="MM/AA" maxlength="5" required>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold">CVV</label>
+                                <input type="password" class="form-control" placeholder="123" maxlength="3" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100 py-2 fw-bold fs-5">
+                            <i class="bi bi-lock-fill me-1"></i> Confirmar Pago
+                        </button>
+                        <a href="{% url 'detalle_carrito' %}" class="btn btn-link text-muted w-100 mt-3 text-decoration-none small text-center d-block">Cancelar y volver al carrito</a>
+                    </form>
+                </div>
+            </div>
+            <p class="text-center text-muted small mt-3"><i class="bi bi-info-circle me-1"></i> Este es un simulador. Puedes ingresar datos inventados para procesar la transacción.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

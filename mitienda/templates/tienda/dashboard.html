@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Panel | Odette{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row mb-4">
+        <div class="col">
+            <h2 class="font-serif text-brand">
+                Hola, {{ request.user.username|title }}
+            </h2>
+            <p class="text-muted">Bienvenido a tu panel de control de Odette.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0 bg-light card-hover">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-box-seam fs-1 text-secondary mb-3"></i>
+                    <h5 class="card-title">Mis Pedidos</h5>
+                    
+                    {% if pedidos %}
+                        <p class="card-text text-muted small mb-2">Tus últimos arreglos solicitados:</p>
+                        <ul class="list-unstyled text-start small mb-3">
+                            {% for pedido in pedidos %}
+                                <li class="border-bottom py-2 text-muted d-flex justify-content-between">
+                                    <span><strong>#{{ pedido.id }}</strong> ({{ pedido.fecha_pedido|date:"d M y" }})</span>
+                                    <span class="fw-bold text-dark">${{ pedido.total|floatformat:0 }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <a href="{% url 'mis_pedidos' %}" class="btn btn-outline-dark btn-sm mt-2">Ver historial completo</a>
+                    {% else %}
+                        <p class="card-text text-muted small mb-4">Aún no tienes pedidos registrados.</p>
+                        <a href="{% url 'catalogo' %}" class="btn btn-outline-dark btn-sm mt-2">Explorar Catálogo</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0 bg-light card-hover">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-geo-alt fs-1 text-secondary mb-3"></i>
+                    <h5 class="card-title">Direcciones</h5>
+                    <p class="card-text text-muted small">Gestiona tus lugares de entrega favoritos.</p>
+                    <a href="{% url 'direccion_list' %}" class="btn btn-outline-dark btn-sm mt-2">Administrar</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100 border-0 bg-light card-hover">
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-shield-lock fs-1 text-secondary mb-3"></i>
+                    <h5 class="card-title">Seguridad</h5>
+                    <p class="card-text text-muted small">Protege tu cuenta y cambia tu clave de acceso.</p>
+                    <a href="{% url 'cambiar_password' %}" class="btn btn-brand btn-sm mt-2">Cambiar Contraseña</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Crear Cuenta | Odette{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-5">
+                    <h3 class="card-title text-center mb-4 font-serif text-brand">Únete a Odette</h3>
+                    
+                    <form method="post" class="auth-form">
+                        {% csrf_token %}
+                        
+                        {{ form.as_p }}
+                        
+                        <button type="submit" class="btn btn-brand w-100 py-2 mt-3">Crear Cuenta</button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="small text-muted">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="text-decoration-none text-dark fw-bold">Inicia Sesión</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+ <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand brand-logo" href="{% url 'home' %}">Odette Flores</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            
+            <ul class="navbar-nav me-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="{% url 'home' %}">Inicio</a></li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'catalogo' %}">
+                        <i class="bi bi-shop me-1"></i>Catálogo
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item me-3">
+                    <form class="d-flex" action="{% url 'catalogo' %}" method="GET">
+                        <input class="form-control form-control-sm me-2 border-secondary" type="search" placeholder="Buscar flores..." name="q" value="{{ request.GET.q }}">
+                        <button class="btn btn-sm btn-outline-dark" type="submit"><i class="bi bi-search"></i></button>
+                    </form>
+                </li>
+                
+               <li class="nav-item me-3">
+                <a class="nav-link" href="{% url 'detalle_carrito' %}">
+                    <i class="bi bi-cart3 fs-5"></i> 
+                   <!-- El badge siempre está en el DOM, se oculta con d-none si es 0 -->
+                   <span class="badge bg-danger rounded-pill {% if cantidad_carrito == 0 %}d-none{% endif %}" id="cart-badge">{{ cantidad_carrito }}</span>
+                     </a>
+                             </li>
+                
+                <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle btn btn-outline-secondary btn-sm px-3" href="#" id="userMenu" data-bs-toggle="dropdown">
+                    {% if request.user.is_authenticated %}
+                        Hola, {{ request.user.username }}
+                    {% else %}
+                        Mi Cuenta
+                    {% endif %}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    {% if request.user.is_authenticated %}
+                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Dashboard</a></li>
+                        
+                        {% if perms.tienda.view_producto %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'producto_list' %}">Gestión de Inventario (CRUD)</a></li>
+                        {% endif %}
+
+                        {% if request.user.is_staff %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Panel de Administración</a></li>
+                        {% endif %}
+
+                        <li>
+                            <form action="{% url 'logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item text-danger">Cerrar Sesión</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="{% url 'login' %}">Iniciar Sesión</a></li>
+                        <li><a class="dropdown-item" href="{% url 'register' %}">Registrarse</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+            </ul>
+        </div>
+    </div>
+</nav>

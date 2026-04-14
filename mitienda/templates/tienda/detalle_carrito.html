@@ -1,0 +1,207 @@
+{% extends 'base.html' %}
+
+{% block title %}Mi Carrito | Odette{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4 font-serif text-brand">Tu Canasto Floral</h2>
+
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" class="ps-4">Producto</th>
+                                    <th scope="col" class="text-center">Precio</th>
+                                    <th scope="col" class="text-center">Cantidad</th>
+                                    <th scope="col" class="text-end">Subtotal</th>
+                                    <th scope="col" class="text-center pe-4">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if items_carrito %}
+                                    {% for item in items_carrito %}
+                                    <tr class="carrito-item-row">
+                                        <td class="ps-4">
+                                            <h6 class="mb-0">{{ item.nombre }}</h6>
+                                        </td>
+                                        <td class="text-center text-muted">
+                                            ${{ item.precio|floatformat:0 }}
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <a href="{% url 'restar_del_carrito' item.producto_id %}" class="btn btn-sm btn-outline-secondary action-btn">-</a>
+                                                <span class="mx-2 fw-bold item-cantidad">{{ item.cantidad }}</span>
+                                                <a href="{% url 'sumar_al_carrito' item.producto_id %}" class="btn btn-sm btn-outline-secondary action-btn">+</a>
+                                            </div>
+                                        </td>
+                                        <td class="text-end fw-bold item-subtotal">
+                                            ${% widthratio item.precio 1 item.cantidad %}
+                                        </td>
+                                        <td class="text-center pe-4">
+                                            <a href="{% url 'eliminar_del_carrito' item.producto_id %}" class="btn btn-sm btn-outline-danger action-btn" title="Eliminar producto">
+                                                <i class="bi bi-trash"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="4" class="text-center py-5">
+                                            <i class="bi bi-basket2 text-muted opacity-50 mb-3 d-block" style="font-size: 3rem;"></i>
+                                            <h5 class="text-muted">Tu canasto está vacío</h5>
+                                            <a href="{% url 'catalogo' %}" class="btn btn-outline-dark mt-2">Volver al catálogo</a>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 bg-light">
+                <div class="card-body p-4">
+                    <h5 class="card-title mb-4">Resumen de Compra</h5>
+                    
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Subtotal</span>
+                        <span id="resumen-subtotal">${{ total_pagar|floatformat:0 }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3">
+                        <span class="text-muted">Envío</span>
+                        <span>Por calcular</span>
+                    </div>
+                    
+                    <hr>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <h5 class="fw-bold m-0">Total</h5>
+                        <h5 class="fw-bold m-0 text-brand" id="total-carrito">${{ total_pagar|floatformat:0 }}</h5>
+                    </div>
+
+                    {% if items_carrito %}
+                        <form action="{% url 'pasarela_pago' %}" method="POST" class="mb-2">
+                            {% csrf_token %}
+                            
+                            {% if request.user.is_authenticated %}
+                                <h6 class="fw-bold mt-4 mb-3 border-top pt-3">Dirección de Envío</h6>
+                                {% if direcciones %}
+                                    {% for dir in direcciones %}
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="radio" name="direccion_envio" id="dir{{ dir.id }}" value="{{ dir.id }}" {% if forloop.first %}checked{% endif %} required>
+                                            <label class="form-check-label small" for="dir{{ dir.id }}">
+                                                <strong>{{ dir.alias }}</strong>: {{ dir.calle }}, {{ dir.comuna }}
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                    <a href="{% url 'direccion_create' %}?next=checkout" class="btn btn-sm btn-outline-secondary w-100 mt-2 mb-3"><i class="bi bi-plus"></i> Agregar otra dirección</a>
+                                {% else %}
+                                    <div class="alert alert-warning small p-2">No tienes direcciones guardadas.</div>
+                                    <a href="{% url 'direccion_create' %}?next=checkout" class="btn btn-sm btn-outline-primary w-100 mb-3"><i class="bi bi-plus-circle"></i> Agregar Dirección</a>
+                                {% endif %}
+                            {% else %}
+                                <div class="alert alert-info small p-2 mt-3">Debes <a href="{% url 'login' %}">iniciar sesión</a> para comprar.</div>
+                            {% endif %}
+                            
+                            <button type="submit" class="btn w-100 btn-brand py-2" {% if not direcciones or not request.user.is_authenticated %}disabled{% endif %}>
+                                <i class="bi bi-credit-card me-2"></i>Proceder al Pago
+                            </button>
+                        </form>
+                       <button type="button" class="btn btn-outline-danger w-100 py-2 small" data-bs-toggle="modal" data-bs-target="#confirmarVaciarModal">
+                        <i class="bi bi-trash me-2"></i>Vaciar Canasto
+                       </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmación Vaciar Carrito -->
+<div class="modal fade" id="confirmarVaciarModal" tabindex="-1" aria-labelledby="confirmarVaciarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title text-danger" id="confirmarVaciarModalLabel"><i class="bi bi-exclamation-triangle me-2"></i> Vaciar Canasto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center p-4">
+                <p class="mb-0">¿Estás seguro de que deseas eliminar todos los arreglos florales de tu canasto?</p>
+                <p class="text-muted small mt-2">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer d-flex justify-content-center border-0">
+                <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Cancelar</button>
+                <a href="{% url 'limpiar_carrito' %}" class="btn btn-danger px-4">Sí, vaciar canasto</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const actionButtons = document.querySelectorAll('.action-btn');
+    
+    actionButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Evitamos que el navegador vaya a la URL
+            
+            const url = this.getAttribute('href');
+            
+            // Realizamos la petición por AJAX
+            fetch(url, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showToast(data.error, 'danger'); // Usamos el nuevo Toast rojo (error)
+                    return;
+                }
+                
+                if (data.success) {
+                    const row = this.closest('tr');
+                    
+                    if (data.eliminado) {
+                        row.remove(); // Borrar fila visualmente
+                        if (data.cantidad_total === 0) {
+                            location.reload(); // Recargar si quedó vacío para mostrar el mensaje de "Canasto vacío"
+                        }
+                    } else {
+                        // Actualizar datos de la fila
+                        row.querySelector('.item-cantidad').textContent = data.cantidad_item;
+                        row.querySelector('.item-subtotal').textContent = '$' + data.subtotal_item;
+                    }
+                    
+                    // Actualizar caja de totales
+                    document.getElementById('total-carrito').textContent = '$' + data.total_carrito;
+                    document.getElementById('resumen-subtotal').textContent = '$' + data.total_carrito;
+                    
+                    // Actualizar burbuja del menú
+                    const badge = document.getElementById('cart-badge');
+                    if (badge) {
+                        badge.textContent = data.cantidad_total;
+                        if (data.cantidad_total === 0) {
+                            badge.classList.add('d-none');
+                        } else {
+                            badge.classList.remove('d-none');
+                        }
+                    }
+                    
+                    // Opcional: También puedes mostrar un toast verde al actualizar con éxito
+                    // showToast('Carrito actualizado', 'success');
+                }
+            })
+            .catch(error => console.error('Error actualizando el carrito:', error));
+        });
+    });
+});
+</script>
+{% endblock %}
